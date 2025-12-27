@@ -1,6 +1,7 @@
 package dev.brijesh.userservice.controllers;
 
 import dev.brijesh.userservice.dtos.*;
+import dev.brijesh.userservice.exceptions.WrongCredentialsException;
 import dev.brijesh.userservice.models.SessionStatus;
 import dev.brijesh.userservice.services.AuthService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class AuthController {
         this.authService = authService;
     }
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO request){
+    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO request) throws WrongCredentialsException{
         return authService.login(request.getEmail(), request.getPassword());
     }
 

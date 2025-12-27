@@ -25,8 +25,6 @@ public class CustomSpringUserDetailsService implements UserDetailsService {
         }
 
         User user = userOptional.get();
-//        User user = userRepository.findByEmail(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User with the given username doesn't exist"));
         return new CustomUserDetails(user);
     }
 }
