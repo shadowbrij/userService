@@ -11,10 +11,13 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserDTO {
+    private Long userid;
     private String email;
     private Set<Role> roles = new HashSet();
     public static UserDTO from(User user){
        UserDTO userDTO = new UserDTO();
+
+       userDTO.setUserid(user.getId());
        userDTO.setEmail(user.getEmail());
        userDTO.setRoles(user.getRoles());
        return  userDTO;

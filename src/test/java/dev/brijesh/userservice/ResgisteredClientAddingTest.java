@@ -24,7 +24,7 @@ public class ResgisteredClientAddingTest {
     RegisteredClientRepository registeredClientRepository;
     @Test
     @Commit
-    public void addRegisteredClient() {
+    public void addProductServiceRegisteredClient() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("productservice")
                 .clientSecret(bCryptPasswordEncoder.encode("productservicesecret"))
@@ -32,9 +32,51 @@ public class ResgisteredClientAddingTest {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:9091/login/oauth2/code/oidc-client")
+                .redirectUri("http://127.0.0.1:9093/login/oauth2/code/oidc-client")
                 .redirectUri("https://oauth.pstmn.io/v1/callback")
-                .postLogoutRedirectUri("http://127.0.0.1:9091/")
+                .postLogoutRedirectUri("http://127.0.0.1:9093")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
+
+        registeredClientRepository.save(oidcClient);
+    }
+
+    @Test
+    @Commit
+    public void addPaymentServiceRegisteredClient() {
+        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("paymentservice")
+                .clientSecret(bCryptPasswordEncoder.encode("paymentservicesecret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri("http://127.0.0.1:9093/login/oauth2/code/oidc-client")
+                .redirectUri("https://oauth.pstmn.io/v1/callback")
+                .postLogoutRedirectUri("http://127.0.0.1:9093")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
+
+        registeredClientRepository.save(oidcClient);
+    }
+
+    @Test
+    @Commit
+    public void addUserServiceRegisteredClient() {
+        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("userservice")
+                .clientSecret(bCryptPasswordEncoder.encode("userservicesecret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri("http://127.0.0.1:9093/login/oauth2/code/oidc-client")
+                .redirectUri("https://oauth.pstmn.io/v1/callback")
+                .postLogoutRedirectUri("http://127.0.0.1:9093")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())

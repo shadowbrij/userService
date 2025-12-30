@@ -7,6 +7,7 @@ import dev.brijesh.userservice.repositories.RoleRepository;
 import dev.brijesh.userservice.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,16 +29,16 @@ public class UserService {
         }
         return UserDTO.from(userOptional.get());
     }
-    public UserDTO setUserRoles(Long userId, List<Long> roleIds){
+    public UserDTO setUserRoles(Long userId, List<String> roleNames){
         Optional<User> userOptional = userRepository.findById(userId);
-        List<Role> roles = roleRepository.findAllByIdIn(roleIds);
+        List<Role> roles = roleRepository.findAllByRoleIn(roleNames);
 
         if (userOptional.isEmpty()) {
             return null;
         }
 
         User user = userOptional.get();
-        user.setRoles(Set.copyOf(roles));
+        user.setRoles(new HashSet<>(roles));
 
         User savedUser = userRepository.save(user);
 

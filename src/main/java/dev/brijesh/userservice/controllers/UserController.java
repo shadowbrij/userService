@@ -22,9 +22,9 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/roles")
-    public ResponseEntity<UserDTO> setUserRoles(@PathVariable("id")Long userId, @RequestBody SetUserRolesRequestDTO roles){
-        UserDTO userDTO = userService.setUserRoles(userId,roles.getRoles());
+    @PostMapping("/roles")
+    public ResponseEntity<UserDTO> setUserRoles(@RequestBody SetUserRolesRequestDTO request){
+        UserDTO userDTO = userService.setUserRoles(request.getUserId(), request.getRoles());
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 }

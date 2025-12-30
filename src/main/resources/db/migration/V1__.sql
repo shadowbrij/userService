@@ -91,15 +91,15 @@ CREATE TABLE user
 CREATE TABLE user_roles
 (
     user_id  BIGINT NOT NULL,
-    roles_id BIGINT NOT NULL,
-    CONSTRAINT pk_user_roles PRIMARY KEY (user_id, roles_id)
+    role_id BIGINT NOT NULL,
+    CONSTRAINT pk_user_roles PRIMARY KEY (user_id, role_id)
 );
 
 ALTER TABLE session
     ADD CONSTRAINT FK_SESSION_ON_USER FOREIGN KEY (user_id) REFERENCES user (id);
 
 ALTER TABLE user_roles
-    ADD CONSTRAINT fk_userol_on_role FOREIGN KEY (roles_id) REFERENCES `role` (id);
+    ADD CONSTRAINT fk_userol_on_role FOREIGN KEY (role_id) REFERENCES `role` (id);
 
 ALTER TABLE user_roles
     ADD CONSTRAINT fk_userol_on_user FOREIGN KEY (user_id) REFERENCES user (id);

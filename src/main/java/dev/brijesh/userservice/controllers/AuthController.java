@@ -1,6 +1,7 @@
 package dev.brijesh.userservice.controllers;
 
 import dev.brijesh.userservice.dtos.*;
+import dev.brijesh.userservice.exceptions.DuplicateSignupException;
 import dev.brijesh.userservice.exceptions.WrongCredentialsException;
 import dev.brijesh.userservice.models.SessionStatus;
 import dev.brijesh.userservice.services.AuthService;
@@ -20,7 +21,7 @@ public class AuthController {
         this.authService = authService;
     }
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO request) throws WrongCredentialsException{
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) throws WrongCredentialsException{
         return authService.login(request.getEmail(), request.getPassword());
     }
 
@@ -30,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDTO> signUp(@RequestBody SignUpRequestDto request) {
+    public ResponseEntity<UserDTO> signUp(@RequestBody SignUpRequestDto request) throws DuplicateSignupException {
         UserDTO userDto = authService.signUp(request.getEmail(), request.getPassword());
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

@@ -1,6 +1,8 @@
 package dev.brijesh.userservice.services;
 
+import dev.brijesh.userservice.dtos.LoginResponseDTO;
 import dev.brijesh.userservice.dtos.UserDTO;
+import dev.brijesh.userservice.exceptions.DuplicateSignupException;
 import dev.brijesh.userservice.exceptions.WrongCredentialsException;
 import dev.brijesh.userservice.models.Session;
 import dev.brijesh.userservice.models.SessionStatus;
@@ -26,7 +28,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public AuthService(UserRepository userRepository, SessionRepository sessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
@@ -34,7 +36,7 @@ public class AuthService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public ResponseEntity<UserDTO> login(String email, String password) throws WrongCredentialsException{
+    public ResponseEntity<LoginResponseDTO> login(String email, String password) throws WrongCredentialsException{
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(userOptional.isEmpty()){
             return  null;
@@ -44,12 +46,6 @@ public class AuthService {
         if(!bCryptPasswordEncoder.matches(password,user.getPassword())){
             throw new WrongCredentialsException("Incorrect username or password");
         }
-
-        //Generating the TOKEN
-        //String token = RandomStringUtils.randomAlphabetic(30);
-        // Create a test key suitable for the desired HMAC-SHA algorithm:
-        //String message = "Hello World!";
-        //byte[] content = message.getBytes(StandardCharsets.UTF_8);
 
         MacAlgorithm alg = Jwts.SIG.HS256; //or HS384 or HS256
         SecretKey key = alg.key().build();
@@ -65,25 +61,24 @@ public class AuthService {
                 .signWith(key)
                 .compact();
 
-        // Parse the compact JWS:
-       // content = Jwts.parser().verifyWith(key).build().parseSignedContent(jws).getPayload();
-        //assert message.equals(new String(content, StandardCharsets.UTF_8));
-
         Session session = new Session();
         session.setSessionStatus(SessionStatus.ACTIVE);
         session.setToken(jws);
         session.setUser(user);
+
+        //set expiry 4 hours from now
+        session.setExpiryDate(DateUtils.addHours(new Date(),4));
         sessionRepository.save(session);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(email);
+        LoginResponseDTO responseDTO = new LoginResponseDTO();
+        responseDTO.setUserId(user.getId());
+        responseDTO.setMessage("Login Successful");
+        responseDTO.setToken(jws);
 
         MultiValueMapAdapter<String, String> headers = new MultiValueMapAdapter<>(new HashMap<>());
         headers.add(HttpHeaders.SET_COOKIE,"auth-token:"+jws);
 
-        ResponseEntity<UserDTO> response = new ResponseEntity<>(userDTO,headers, HttpStatus.OK);
-
-        return  response;
+        return new ResponseEntity<>(responseDTO,headers, HttpStatus.OK);
     }
 
     public ResponseEntity<Void> logout(String token, Long userId){
@@ -100,7 +95,12 @@ public class AuthService {
         return ResponseEntity.ok().build();
     }
 
-    public UserDTO signUp(String email, String password){
+    public UserDTO signUp(String email, String password) throws DuplicateSignupException {
+        User existingUser = userRepository.findByEmail(email).orElse(null);
+        if(existingUser != null){
+            throw new DuplicateSignupException("User with email already exists");
+        }
+
         User user = new User();
         user.setEmail(email);
         user.setPassword(bCryptPasswordEncoder.encode(password));
