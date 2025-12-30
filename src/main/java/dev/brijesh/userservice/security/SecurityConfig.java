@@ -66,8 +66,9 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-                //only allow /auth/** endpoints without authentication
-                .csrf(csrf-> csrf.ignoringRequestMatchers("/auth/**","/oauth2/**","/users/roles","/roles/**"))
+                // allow few endpoints without authentication
+                //.csrf(csrf-> csrf.ignoringRequestMatchers("/auth/**","/oauth2/**","/users/roles","/roles/**"))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/auth/**","/oauth2/**", "/users/roles","/roles/**").permitAll()
                         .anyRequest().authenticated()
