@@ -5,12 +5,10 @@ import dev.brijesh.userservice.exceptions.DuplicateSignupException;
 import dev.brijesh.userservice.exceptions.WrongCredentialsException;
 import dev.brijesh.userservice.models.SessionStatus;
 import dev.brijesh.userservice.services.AuthService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,5 +39,10 @@ public class AuthController {
         SessionStatus sessionStatus = authService.validate(request.getToken(), request.getUserId());
 
         return new ResponseEntity<>(sessionStatus, HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<Long> getUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false)  String authToken){
+        return authService.getUserIdFromToken(authToken);
     }
 }

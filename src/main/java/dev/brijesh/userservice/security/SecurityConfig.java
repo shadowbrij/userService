@@ -28,6 +28,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
@@ -130,6 +131,8 @@ public class SecurityConfig {
                             .collect(Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet));
                     claims.put("roles", roles);
                 });
+                // Set access token expiry to 1 hour
+                context.getClaims().expiresAt(java.time.Instant.now().plus(Duration.ofHours(1)));
             }
         };
     }

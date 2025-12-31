@@ -119,9 +119,13 @@ public class AuthService {
 
         return SessionStatus.ACTIVE;
     }
-}
+    public ResponseEntity<Long> getUserIdFromToken(String authToken){
+        Optional<Session> sessionOptional = sessionRepository.findSessionByToken(authToken);
+        if(sessionOptional.isEmpty()){
+            return null;
+        }
 
-/*
-Task-1 : Implement limit on number of active sessions for a user.
-Task-2 : Implement login workflow using the token details with validation of expiry date.
-*/
+        Session session = sessionOptional.get();
+        return new ResponseEntity<>(session.getUser().getId(),HttpStatus.OK);
+    }
+}
