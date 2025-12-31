@@ -21,19 +21,6 @@ CREATE TABLE authorization
     refresh_token_issued_at       datetime NULL,
     refresh_token_expires_at      datetime NULL,
     refresh_token_metadata        TEXT NULL,
-    oidc_id_token_value           TEXT NULL,
-    oidc_id_token_issued_at       datetime NULL,
-    oidc_id_token_expires_at      datetime NULL,
-    oidc_id_token_metadata        TEXT NULL,
-    oidc_id_token_claims          TEXT NULL,
-    user_code_value               TEXT NULL,
-    user_code_issued_at           datetime NULL,
-    user_code_expires_at          datetime NULL,
-    user_code_metadata            TEXT NULL,
-    device_code_value             TEXT NULL,
-    device_code_issued_at         datetime NULL,
-    device_code_expires_at        datetime NULL,
-    device_code_metadata          TEXT NULL,
     CONSTRAINT pk_authorization PRIMARY KEY (id)
 );
 
@@ -73,7 +60,7 @@ CREATE TABLE `role`
 CREATE TABLE session
 (
     id             BIGINT AUTO_INCREMENT NOT NULL,
-    token          VARCHAR(255) NULL,
+    token          TEXT NULL,
     expiry_date    datetime NULL,
     user_id        BIGINT NULL,
     session_status TINYINT NULL,

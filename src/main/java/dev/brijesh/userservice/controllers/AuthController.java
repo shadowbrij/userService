@@ -42,7 +42,7 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Long> getUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false)  String authToken){
-        return authService.getUserIdFromToken(authToken);
+    public ResponseEntity<Long> getUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false)  String bearerToken){
+        return authService.getUserIdFromToken(bearerToken);
     }
 }

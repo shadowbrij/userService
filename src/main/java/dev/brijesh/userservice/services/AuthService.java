@@ -119,8 +119,14 @@ public class AuthService {
 
         return SessionStatus.ACTIVE;
     }
-    public ResponseEntity<Long> getUserIdFromToken(String authToken){
-        Optional<Session> sessionOptional = sessionRepository.findSessionByToken(authToken);
+    public ResponseEntity<Long> getUserIdFromToken(String bearerToken){
+        if(bearerToken == null || !bearerToken.startsWith("Bearer")){
+            return null;
+        }
+
+        String token = bearerToken.substring("Bearer ".length());
+
+        Optional<Session> sessionOptional = sessionRepository.findSessionByToken(token);
         if(sessionOptional.isEmpty()){
             return null;
         }
